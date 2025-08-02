@@ -1,0 +1,107 @@
+CHATWOOT
+Se eu fizer um fork em um projeto no github, é possível alguma IA me ajudar a dar manutenção nessa webapplication?
+Me refiro a pedir modificações e resolver mensagens de erros.
+
+Desejo:
+- Trabalhar com os fontes localmente ou no editor de códigos do github, da melhor forma possível que uma IA futuramente possa também acessar.
+- Criar minha imagem da versão estavel (a versão atual), não sei se é no docker hub, que já tenho conta.
+- Criar um branch de desenvolvimento e realizar alterações
+- Pull request para a main do que estiver estável
+- Criar novamente a imagem e subir para meu docker hub.
+- Atualizar a stack que está no portainer para a versão atualizada do docker hub (latest)
+
+
+
+
+SIM! TUDO ISSO É POSSÍVEL.
+- Dentro da pasta _FONTES:
+git clone https://github.com/diegosayron/chatwoot.git
+cd chatwoot
+git checkout -b dev
+(Agora você tem a branch dev para trabalhar nas alterações.)
+
+
+
+✅ 2. Editar os arquivos localmente ou via GitHub
+Você pode:
+Usar VS Code localmente (com Git integrado)
+Ou usar o GitHub Codespaces (se disponível na sua conta) para editar direto no navegador.
+Uma IA como o Copilot ou o ChatGPT pode analisar e sugerir alterações no código com base nesses arquivos.
+
+git add .
+git status
+PS E:\_FONTES\chatwoot> git config --global user.email "diegosayron@gmail.com"
+PS E:\_FONTES\chatwoot> git config --global user.name "Diego Sayron"
+PS E:\_FONTES\chatwoot> git commit -m 'Liberacao versao enterprise'
+git push --set-upstream origin dev  (vai pedir login! atenção à janela)
+
+
+✅ 3. Criar o Dockerfile personalizado
+Dentro do seu fork, crie um Dockerfile personalizado na raiz:
+FROM chatwoot/chatwoot:2.18.0
+
+# Copie alterações se necessário:
+# COPY ./meuarquivo.rb /app/app/models/
+
+WORKDIR /app
+
+
+
+✅ 4. Criar imagem e publicar no Docker Hub
+No terminal (no diretório do projeto):
+# Crie a imagem com a tag
+docker build -t diegosayron/chatwoot:latest .
+
+# Faça login no Docker Hub
+docker login
+
+# Envie para o Docker Hub
+docker push diegosayron/chatwoot:latest
+
+
+
+✅ 5. Fazer PR da dev para main quando estiver estável
+No GitHub:
+Vá até seu fork.
+Crie um Pull Request de dev → main.
+Após revisão, mergeie.
+
+
+
+✅ 6. Atualizar a imagem no Docker Hub
+Depois de aplicar as alterações na main:
+# Atualize a imagem
+docker build -t diegosayron/chatwoot:latest .
+docker push diegosayron/chatwoot:latest
+
+
+
+
+✅ 7. Atualizar a Stack no Portainer
+No Portainer:
+
+Vá até Stacks > chatwoot > Editor.
+
+Altere a imagem:
+image: diegosayron/chatwoot:latest
+
+
+
+
+🧠 Dica extra (versionamento)
+Além de latest, use tags específicas para cada release:
+docker build -t diegosayron/chatwoot:2.18.0-custom .
+docker push diegosayron/chatwoot:2.18.0-custom
+
+Assim, sua stack pode usar:
+image: diegosayron/chatwoot:2.18.0-custom
+
+
+
+
+E você evita que mudanças em latest causem problemas inesperados.
+
+
+
+
+

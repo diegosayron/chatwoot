@@ -1,3 +1,9 @@
+Rails.application.config.to_prepare do
+  if defined?(Enterprise::Account::PlanUsageAndLimits)
+    Enterprise::Account::PlanUsageAndLimits.prepend(EnterpriseAdminPlanOverride)
+  end
+end
+
 module EnterpriseAdminPlanOverride
   def plan_name
     return "Enterprise" if self.id == 1
@@ -25,6 +31,3 @@ module EnterpriseAdminPlanOverride
     end
   end
 end
-
-# Prepend o patch na classe já existente
-Enterprise::Account::PlanUsageAndLimits.prepend(EnterpriseAdminPlanOverride)
